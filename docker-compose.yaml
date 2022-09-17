@@ -11,6 +11,11 @@ services:
     volumes:
       - ./server/db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
       - data:/var/lib/postgres/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   server:
     build: ./server
@@ -23,7 +28,8 @@ services:
     env_file:
       - ./server/.env.dev
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
 volumes:
   data:

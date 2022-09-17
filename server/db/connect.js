@@ -10,9 +10,9 @@ const configDev = {
 
 const client = new Client(configDev);
 
-client.connect(function (err) {
-	if (err) throw err;
-	console.log("Connected!");
-});
+client
+	.connect()
+	.then(() => console.log("connected"))
+	.catch((err) => console.error("connection error", err.stack));
 
 module.exports = client;
