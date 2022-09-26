@@ -3,12 +3,12 @@ let router = express.Router();
 const client = require("../db/connect");
 
 /* GET home page. */
-router.get("/ping", function (req, res, next) {
+router.get("/ping", (req, res, next) => {
 	console.log("Hello User");
 	res.send("pong");
 });
 
-router.get("/insert", async function (req, res, next) {
+router.get("/insert", async (req, res, next) => {
 	console.log("Test Inserting into table");
 
 	const query =
@@ -25,7 +25,7 @@ router.get("/insert", async function (req, res, next) {
 	}
 });
 
-router.get("/getUsers", async function (req, res, next) {
+router.get("/getUsers", async (req, res, next) => {
 	console.log("Getting users from table");
 
 	const query = "select * from users";
@@ -41,7 +41,7 @@ router.get("/getUsers", async function (req, res, next) {
 	}
 });
 
-router.get("/users", function (req, res, next) {
+router.get("/users", (req, res, next) => {
 	res.send("NO User");
 });
 
