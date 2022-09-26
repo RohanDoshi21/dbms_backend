@@ -46,4 +46,36 @@ customerRouter.post("/signup", async (req, res) => {
 	}
 });
 
+customerRouter.post("/login", async (req, res) => {
+	text = "select * from Customers where email = $1";
+	values = [req.body?.email?.toLowerCase()];
+	try {
+		const data = await client.query(text, values);
+		if (data.rowCount === 1) {
+			const auth = await bcrypt.compare(
+				req.body.password,
+				data.rows[0].password
+			);
+			if (auth) {
+				const token = await generateUserToken(data.rows[0].id);
+				const user = data.rows[0];
+				delete user.password;
+				return res.json({
+					token,
+					user,
+				});
+			} else {
+				return res
+					.status(403)
+					.json({ error: "email and password does not match" });
+			}
+		} else {
+			return res.status(404).json({ error: "No user Found" });
+		}
+	} catch (err) {
+		console.log(err);
+		return res.status(500).json({ error: "Internal Server Error." });
+	}
+});
+
 module.exports = customerRouter;
