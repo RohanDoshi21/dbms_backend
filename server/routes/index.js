@@ -28,7 +28,7 @@ router.get("/insert", async (req, res, next) => {
 router.get("/getUsers", async (req, res, next) => {
 	console.log("Getting users from table");
 
-	const query = "select * from users";
+	const query = "select * from Customers";
 
 	console.log(query);
 	try {
