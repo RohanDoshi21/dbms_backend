@@ -34,6 +34,7 @@ CREATE TABLE customer_token (
 
 CREATE TABLE Vendors (
   id SERIAL PRIMARY KEY,
+  full_name varchar,
   username varchar UNIQUE,
   email varchar UNIQUE,
   mobile_number varchar UNIQUE,
