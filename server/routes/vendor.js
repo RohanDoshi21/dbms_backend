@@ -9,13 +9,13 @@ const {
 } = require("../middlewares/vendorMiddleware.js");
 
 vendorRouter.post("/signup", validateUserData, async (req, res) => {
-    text =
+    let text =
         "insert INTO Vendors(full_name, username, email, mobile_number, password, latitude, longitude, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, full_name, username, email, mobile_number, created_at, updated_at";
     const timestamp = new Date();
     const encryptedPassword = await bcrypt.hash(req.body.password, 10);
-    latitude = 0.0;
-    longitude = 0.0;
-    values = [
+    let latitude = 0.0;
+    let longitude = 0.0;
+    let values = [
         req.body.full_name,
         req.body.username,
         req.body.email.toLowerCase(),
@@ -52,8 +52,8 @@ vendorRouter.post("/signup", validateUserData, async (req, res) => {
 });
 
 vendorRouter.post("/login", async (req, res) => {
-    text = "select * from Vendors where email = $1";
-    values = [req.body?.email?.toLowerCase()];
+    let text = "select * from Vendors where email = $1";
+    let values = [req.body?.email?.toLowerCase()];
     try {
         const data = await client.query(text, values);
         if (data.rowCount === 1) {
