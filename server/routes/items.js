@@ -26,17 +26,16 @@ itemRouter.post("/addItem", isAuthenticated, async (req, res) => {
 
 itemRouter.patch("/updateQuantity", isAuthenticated, async (req, res) => {
 	let text =
-		"update Items set quantity = quantity + $1 where name = $2 and fk_vendor = $3 and id = $4 RETURNING name, selling_price, mrp, quantity";
-	let values = [
-		req.body.quantity,
-		req.body.name,
-		req.user["id"],
-		req.body.id,
-	];
+		"update Items set quantity = quantity + $1 where fk_vendor = $2 and id = $3 RETURNING name, selling_price, mrp, quantity";
+	let values = [req.body.quantity, req.user["id"], req.body.itemId];
 
 	try {
 		const data = await client.query(text, values);
-		res.json(data.rows[0]);
+		if (data.rowCount === 1) {
+			res.json(data.rows[0]);
+		} else {
+			res.status(404).json({ error: "No Product found" });
+		}
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({ error: "Internal Server Error" });
