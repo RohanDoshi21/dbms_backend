@@ -73,6 +73,22 @@ router.get("/getVendors", async (req, res, next) => {
 	}
 });
 
+router.get("/getItems", async (req, res, next) => {
+	console.log("Getting items from table");
+
+	const query = "select * from Items";
+
+	console.log(query);
+	try {
+		const result = await client.query(query, []);
+		res.send(result.rows);
+	} catch (err) {
+		console.log("Error");
+		console.log(err);
+		res.status(500).send("Error");
+	}
+});
+
 router.get("/users", (req, res, next) => {
 	res.send("NO User");
 });
