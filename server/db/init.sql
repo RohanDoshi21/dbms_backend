@@ -74,19 +74,6 @@ CREATE TABLE vendor_token (
     CONSTRAINT fk_vendor FOREIGN KEY(fk_vendor) REFERENCES Vendors(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Orders (
-    id SERIAL PRIMARY KEY,
-    fk_customer int,
-    fk_item int,
-    quantity int,
-    status varchar,
-    delivery_charges float,
-    package_charges float,
-    taxes float,
-    total_amount float,
-    created_At timestamp
-);
-
 CREATE TABLE Items (
     id SERIAL PRIMARY KEY,
     name varchar,
@@ -96,16 +83,63 @@ CREATE TABLE Items (
     quantity int
 );
 
-ALTER TABLE
-    Orders
-ADD
-    FOREIGN KEY (fk_customer) REFERENCES Customers(id);
+CREATE TABLE Customer_Order (
+    fk_customer int,
+    order_id SERIAL PRIMARY KEY,
+    total float,
+    status varchar,
+    -- CREATED or CONFIRMED
+    delivery_charges float,
+    taxes float,
+    grand_total float
+);
+
+CREATE TABLE Cart (
+    fk_order int,
+    fk_item int,
+    quantity int,
+    total float,
+    package_charges float,
+    status varchar,
+    -- BOUGHT or DELIVERED
+    PRIMARY KEY(fk_order, fk_item)
+);
 
 ALTER TABLE
-    Orders
+    Customer_Order
 ADD
-    FOREIGN KEY (fk_item) REFERENCES Items(id);
+    FOREIGN KEY (fk_customer) REFERENCES Customer(id);
 
+ALTER TABLE
+    Cart
+ADD
+    FOREIGN KEY (fk_order) REFERENCES Customer_Order(order_id);
+
+ALTER TABLE
+    Cart
+ADD
+    FOREIGN KEY (fk_item) REFERENCES Items (id);
+
+-- CREATE TABLE Orders (
+--     id SERIAL PRIMARY KEY,
+--     fk_customer int,
+--     fk_item int,
+--     quantity int,
+--     status varchar,
+--     delivery_charges float,
+--     package_charges float,
+--     taxes float,
+--     total_amount float,
+--     created_At timestamp
+-- );
+-- ALTER TABLE
+--     Orders
+-- ADD
+--     FOREIGN KEY (fk_customer) REFERENCES Customers(id);
+-- ALTER TABLE
+--     Orders
+-- ADD
+--     FOREIGN KEY (fk_item) REFERENCES Items(id);
 ALTER TABLE
     Items
 ADD

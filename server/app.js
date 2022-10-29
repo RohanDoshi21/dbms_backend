@@ -7,6 +7,7 @@ let indexRouter = require("./routes/index");
 let customerRouter = require("./routes/customer");
 let vendorRouter = require("./routes/vendor");
 let itemRouter = require("./routes/items");
+let orderRouter = require("./routes/orders");
 
 let app = express();
 
@@ -20,5 +21,6 @@ app.use("/", indexRouter);
 app.use("/customer", customerRouter);
 app.use("/vendor", vendorRouter);
 app.use("/items", itemRouter);
+app.use("/orders", orderRouter);
 
 module.exports = app;
