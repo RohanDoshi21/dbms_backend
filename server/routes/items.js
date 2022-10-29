@@ -42,4 +42,22 @@ itemRouter.patch("/updateQuantity", isAuthenticated, async (req, res) => {
 	}
 });
 
+itemRouter.patch("/updateSellingPrice", isAuthenticated, async (req, res) => {
+	let text =
+		"update Items set selling_price = $1 where fk_vendor = $2 and id = $3 RETURNING name, selling_price, mrp, quantity";
+	let values = [req.body.selling_price, req.user["id"], req.body.itemId];
+
+	try {
+		const data = await client.query(text, values);
+		if (data.rowCount === 1) {
+			res.json(data.rows[0]);
+		} else {
+			res.status(404).json({ error: "No Product found" });
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
 module.exports = itemRouter;
