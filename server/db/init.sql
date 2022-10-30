@@ -11,24 +11,24 @@ CREATE TABLE users (
 
 CREATE TABLE Customers (
     id SERIAL PRIMARY KEY,
-    full_name varchar,
-    username varchar UNIQUE,
-    email varchar UNIQUE,
-    mobile_number varchar UNIQUE,
-    password varchar,
-    latitude float,
-    longitude float,
+    full_name varchar NOT NULL,
+    username varchar UNIQUE NOT NULL,
+    email varchar UNIQUE NOT NULL,
+    mobile_number varchar UNIQUE NOT NULL,
+    password varchar NOT NULL,
+    latitude float NOT NULL,
+    longitude float NOT NULL,
     created_At timestamp,
     updated_at timestamp
 );
 
 CREATE TABLE Address (
     id SERIAL PRIMARY KEY,
-    line_1 varchar,
+    line_1 varchar NOT NULL,
     line_2 varchar,
-    city varchar,
-    user_state varchar,
-    postal_code int
+    city varchar NOT NULL,
+    user_state varchar NOT NULL,
+    postal_code int NOT NULL
 );
 
 CREATE TABLE Customer_Address (
@@ -50,11 +50,11 @@ CREATE TABLE customer_token (
 
 CREATE TABLE Vendors (
     id SERIAL PRIMARY KEY,
-    full_name varchar,
-    username varchar UNIQUE,
-    email varchar UNIQUE,
-    mobile_number varchar UNIQUE,
-    password varchar,
+    full_name varchar NOT NULL,
+    username varchar UNIQUE NOT NULL,
+    email varchar UNIQUE NOT NULL,
+    mobile_number varchar UNIQUE NOT NULL,
+    password varchar NOT NULL,
     latitude float,
     longitude float,
     created_At timestamp,
@@ -76,31 +76,34 @@ CREATE TABLE vendor_token (
 
 CREATE TABLE Items (
     id SERIAL PRIMARY KEY,
-    name varchar,
-    selling_price float,
-    mrp float,
-    fk_vendor int,
-    quantity int
+    name varchar NOT NULL,
+    selling_price float NOT NULL check (selling_price >= 0),
+    mrp float NOT NULL check (mrp >= 0),
+    fk_vendor int NOT NULL,
+    quantity int NOT NULL check (quantity >= 0),
+    check (selling_price <= mrp)
 );
 
 CREATE TABLE Customer_Order (
-    fk_customer int,
+    fk_customer int NOT NULL,
     order_id SERIAL PRIMARY KEY,
-    total float,
-    status varchar,
+    total float NOT NULL check (total >= 0),
+    status varchar NOT NULL,
     -- CREATED or CONFIRMED
-    delivery_charges float,
-    taxes float,
-    grand_total float
+    delivery_charges float NOT NULL check (delivery_charges >= 0),
+    taxes float NOT NULL check (taxes >= 0),
+    grand_total float NOT NULL check (grand_total >= 0),
+    check (grand_total = total + delivery_charges + taxes),
+    check (status = 'CREATED' or status = 'CONFIRMED')
 );
 
 CREATE TABLE Cart (
-    fk_order int,
-    fk_item int,
-    quantity int,
-    total float,
-    package_charges float,
-    status varchar,
+    fk_order int NOT NULL,
+    fk_item int NOT NULL,
+    quantity int NOT NULL check (quantity >= 0),
+    total float NOT NULL check (total >= 0),
+    package_charges float NOT NULL check (package_charges >= 0),
+    status varchar NOT NULL check (status = 'BOUGHT' or status = 'DELIVERED'),
     -- BOUGHT or DELIVERED
     PRIMARY KEY(fk_order, fk_item)
 );

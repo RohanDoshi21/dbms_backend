@@ -20,7 +20,7 @@ itemRouter.post("/addItem", isAuthenticated, async (req, res) => {
     res.json(data.rows[0]);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: err });
   }
 });
 
@@ -38,7 +38,7 @@ itemRouter.patch("/updateQuantity", isAuthenticated, async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: err });
   }
 });
 
@@ -56,7 +56,7 @@ itemRouter.patch("/updateSellingPrice", isAuthenticated, async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: err });
   }
 });
 
