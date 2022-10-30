@@ -27,8 +27,8 @@ CREATE TABLE Address (
     line_1 varchar,
     line_2 varchar,
     city varchar,
-    state varchar,
-    postal_code varchar
+    user_state varchar,
+    postal_code int
 );
 
 CREATE TABLE Customer_Address (
