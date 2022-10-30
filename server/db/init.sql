@@ -108,7 +108,7 @@ CREATE TABLE Cart (
 ALTER TABLE
     Customer_Order
 ADD
-    FOREIGN KEY (fk_customer) REFERENCES Customer(id);
+    FOREIGN KEY (fk_customer) REFERENCES Customers(id);
 
 ALTER TABLE
     Cart
