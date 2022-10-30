@@ -8,6 +8,34 @@ const {
     isAuthenticated,
 } = require("../middlewares/customerMiddleware.js");
 
+
+customerRouter.post("/address",isAuthenticated,async (req, res) => {
+    let text = "insert into Address(line_1,line_2,city,user_state,postal_code) values($1,$2,$3,$4,$5) returning *";
+    let values = [
+        req.body.line_1,
+        req.body.line_2,
+        req.body.city,
+        req.body.user_state,
+        req.body.postal_code
+    ];
+    try {
+        const data = await client.query(text, values);  
+        let text2 = "insert into Customer_Address(customer_id,address_id,created_at,updated_at) values($1,$2,$3,$4) returning *";
+        const timestamp = new Date();
+        let values2 = [
+        req.user.id,
+        data.rows[0].id,
+        timestamp,
+        timestamp];
+
+        const data2 = await client.query(text2, values2);
+        console.log(data2.rows);
+        res.json({cust_addr:{...data2.rows[0]},address_from_address:{...data.rows[0]}});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({"error":"Internal server error"});
+    }
+})
 customerRouter.post("/signup", validateUserData, async (req, res) => {
     let text =
         "insert INTO Customers(full_name, username, email, mobile_number, password, latitude, longitude, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, full_name, username, email, mobile_number, created_at, updated_at";
@@ -86,5 +114,4 @@ customerRouter.post("/login", async (req, res) => {
 customerRouter.get("/me", isAuthenticated, (req, res) => {
     res.send({ user: req.user });
 });
-
 module.exports = customerRouter;
