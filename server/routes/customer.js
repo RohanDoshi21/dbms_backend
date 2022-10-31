@@ -105,7 +105,6 @@ customerRouter.post("/login", async (req, res) => {
         } else {
             return res.status(404).json({ error: "No user Found" });
         }
-        
     } catch (err) {
         console.log(err);
         return res.status(500).json({ error: "Internal Server Error." });
