@@ -7,6 +7,7 @@ const {
   validateUserData,
   isAuthenticated,
 } = require("../middlewares/customerMiddleware.js");
+const e = require("express");
 
 customerRouter.post("/address", isAuthenticated, async (req, res) => {
   let text =
@@ -126,6 +127,31 @@ customerRouter.get("/myorder", isAuthenticated, async (req, res) => {
 
 customerRouter.get("/me", isAuthenticated, (req, res) => {
   res.send({ user: req.user });
+});
+
+customerRouter.get("/getItems", isAuthenticated, async (req, res) => {
+  let text = "select * from items";
+
+  let search = req.query.name;
+
+  let search_q = "select * from items where items.name like $1";
+
+  console.log(search);
+
+  try {
+    if (search) {
+      const dataq = await client.query(search_q, ["%" + req.query.name + "%"]);
+      res.json(dataq);
+    } else {
+      const data = await client.query(text);
+      res.json(data);
+    }
+
+    // res.send("asd");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
 });
 
 module.exports = customerRouter;

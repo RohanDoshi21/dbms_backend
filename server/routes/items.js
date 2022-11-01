@@ -60,4 +60,17 @@ itemRouter.patch("/updateSellingPrice", isAuthenticated, async (req, res) => {
   }
 });
 
+// itemRouter.get("/getitems", isAuthenticated, async (req, res) => {
+//     let text = "select * from items";
+
+//     try {
+//         const data = await client.query(text);
+//         // res.status(201).json('Sended')
+//         res.send("asd");
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ error: err });
+//     }
+// });
+
 module.exports = itemRouter;
