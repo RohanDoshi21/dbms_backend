@@ -7,6 +7,7 @@ const {
   validateUserData,
   isAuthenticated,
 } = require("../middlewares/customerMiddleware.js");
+const e = require("express");
 
 customerRouter.post("/address", isAuthenticated, async (req, res) => {
   let text =
@@ -112,22 +113,45 @@ customerRouter.post("/login", async (req, res) => {
   }
 });
 
-customerRouter.get("/myorder",isAuthenticated, async (req,res)=>{
-    let query ="Select Customer_Order.order_id,Customer_Order.total,Customer_Order.delivery_charges,Customer_Order.taxes,Customer_Order.grand_total,Cart.fk_item,Cart.quantity from Customer_Order inner join Cart on Customer_Order.order_id = Cart.fk_order where Customer_Order.fk_customer=$1 and Cart.fk_order=$2 and Cart.status = 'BOUGHT'";
-    let values =[
-      req.user.id,
-      req.body.orderId
-    ]
-    try {
-      const data= await client.query(query, values);
-      res.json({order:{...data.rows[0]}})
-    } catch (error) {
-      res.send(error);
-    }
+customerRouter.get("/myorder", isAuthenticated, async (req, res) => {
+  let query =
+    "Select Customer_Order.order_id,Customer_Order.total,Customer_Order.delivery_charges,Customer_Order.taxes,Customer_Order.grand_total,Cart.fk_item,Cart.quantity from Customer_Order inner join Cart on Customer_Order.order_id = Cart.fk_order where Customer_Order.fk_customer=$1 and Cart.fk_order=$2 and Cart.status = 'BOUGHT'";
+  let values = [req.user.id, req.body.orderId];
+  try {
+    const data = await client.query(query, values);
+    res.json({ order: { ...data.rows[0] } });
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 customerRouter.get("/me", isAuthenticated, (req, res) => {
   res.send({ user: req.user });
+});
+
+customerRouter.get("/getItems", isAuthenticated, async (req, res) => {
+  let text = "select * from items";
+
+  let search = req.query.name;
+
+  let search_q = "select * from items where items.name like $1";
+
+  console.log(search);
+
+  try {
+    if (search) {
+      const dataq = await client.query(search_q, ["%" + req.query.name + "%"]);
+      res.json(dataq);
+    } else {
+      const data = await client.query(text);
+      res.json(data);
+    }
+
+    // res.send("asd");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
 });
 
 module.exports = customerRouter;

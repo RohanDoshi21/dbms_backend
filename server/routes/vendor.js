@@ -104,4 +104,20 @@ vendorRouter.get("/myOrders", isAuthenticated, async (req, res) => {
   }
 });
 
+vendorRouter.get("/myItems", isAuthenticated, async (req, res) => {
+  let text =
+    "select Items.name, Items,selling_price, Items.mrp, Items.quantity from Items inner join Vendors on Items.fk_vendor = Vendors.id where Vendors.id = $1";
+
+  let value = req.user.id;
+
+  try {
+    const data = await client.query(text, [value]);
+
+    res.status(201).json(data);
+  } catch (er) {
+    res.status(400).json(er);
+    console.log(er);
+  }
+});
+
 module.exports = vendorRouter;

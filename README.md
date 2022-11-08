@@ -1,4 +1,12 @@
-# dbms_backend
+# DBMS Mini Project
+
+## Relational Diagram
+
+<img src= "https://user-images.githubusercontent.com/63660267/199528051-cd86ec71-a02c-4b8f-9f69-05e5bee6d417.png" height=500></img>
+
+## ER Diagram
+
+<img src= "https://user-images.githubusercontent.com/63660267/199527388-f25a8ad7-0e5a-4bbc-9a04-60331d4fb31e.png" height=500></img>
 
 > Steps to build using docker-compose
 
