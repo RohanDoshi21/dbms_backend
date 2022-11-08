@@ -87,12 +87,12 @@ CREATE TABLE Items (
 CREATE TABLE Customer_Order (
     fk_customer int NOT NULL,
     order_id SERIAL PRIMARY KEY,
-    total float NOT NULL check (total >= 0),
+    total float check (total >= 0),
     status varchar NOT NULL,
     -- CREATED or CONFIRMED
-    delivery_charges float NOT NULL check (delivery_charges >= 0),
-    taxes float NOT NULL check (taxes >= 0),
-    grand_total float NOT NULL check (grand_total >= 0),
+    delivery_charges float  check (delivery_charges >= 0),
+    taxes float  check (taxes >= 0),
+    grand_total float  check (grand_total >= 0),
     check (grand_total = total + delivery_charges + taxes),
     check (status = 'CREATED' or status = 'CONFIRMED')
 );

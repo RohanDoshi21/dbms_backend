@@ -115,7 +115,7 @@ customerRouter.post("/login", async (req, res) => {
 
 customerRouter.get("/myorder", isAuthenticated, async (req, res) => {
   let query =
-    "Select Customer_Order.order_id,Customer_Order.total,Customer_Order.delivery_charges,Customer_Order.taxes,Customer_Order.grand_total,Cart.fk_item,Cart.quantity from Customer_Order inner join Cart on Customer_Order.order_id = Cart.fk_order where Customer_Order.fk_customer=$1 and Cart.fk_order=$2 and Cart.status = 'Bought'";
+    "Select Customer_Order.order_id,Customer_Order.total,Customer_Order.delivery_charges,Customer_Order.taxes,Customer_Order.grand_total,Cart.fk_item,Cart.quantity from Customer_Order inner join Cart on Customer_Order.order_id = Cart.fk_order where Customer_Order.fk_customer=$1 and Cart.fk_order=$2 and Cart.status = 'BOUGHT'";
   let values = [req.user.id, req.body.orderId];
   try {
     const data = await client.query(query, values);
