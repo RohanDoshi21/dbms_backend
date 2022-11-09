@@ -138,8 +138,8 @@ customerRouter.get("/getItems", isAuthenticated, async (req, res) => {
 
   try {
     if (search) {
-        // convert search to lowercase
-        search = search.toLowerCase();
+      // convert search to lowercase
+      search = search.toLowerCase();
       const data = await client.query(search_q, ["%" + search + "%"]);
       res.json(data.rows);
     } else {

@@ -4,9 +4,8 @@ const orderRouter = require("express").Router();
 const { isAuthenticated } = require("../middlewares/customerMiddleware.js");
 
 orderRouter.post("/createOrder", isAuthenticated, async (req, res) => {
-
-    let checkIfPreviousOrderExists = "select * from Customer_Order where fk_customer = $1 and status = 'CREATED'";
-
+  let checkIfPreviousOrderExists =
+    "select * from Customer_Order where fk_customer = $1 and status = 'CREATED'";
 
   let query =
     "Insert into Customer_Order(fk_customer, status) values ($1, 'CREATED') RETURNING order_id";
@@ -15,10 +14,10 @@ orderRouter.post("/createOrder", isAuthenticated, async (req, res) => {
   try {
     let result = await client.query(checkIfPreviousOrderExists, values);
     if (result.rows.length > 0) {
-        res.status(400).json({ error: "Previous order exists" });
+      res.status(400).json({ error: "Previous order exists" });
     } else {
-        const data = await client.query(query, values);
-        res.json(data.rows[0]);
+      const data = await client.query(query, values);
+      res.json(data.rows[0]);
     }
   } catch (err) {
     console.log(err);
@@ -37,7 +36,8 @@ orderRouter.post("/addItemToOrder", isAuthenticated, async (req, res) => {
     let total_price = selling_price * req.body.quantity;
     let packaging_charge = 0.05 * total_price;
 
-    let getOrderNo = "select order_id from Customer_Order where fk_customer = $1 and status = 'CREATED'";
+    let getOrderNo =
+      "select order_id from Customer_Order where fk_customer = $1 and status = 'CREATED'";
 
     data = await client.query(getOrderNo, [req.user.id]);
 
@@ -68,7 +68,8 @@ orderRouter.post("/addItemToOrder", isAuthenticated, async (req, res) => {
 
 orderRouter.post("/confirmOrder", isAuthenticated, async (req, res) => {
   try {
-    let getOrderNo = "select order_id from Customer_Order where fk_customer = $1 and status = 'CREATED'";
+    let getOrderNo =
+      "select order_id from Customer_Order where fk_customer = $1 and status = 'CREATED'";
     let data = await client.query(getOrderNo, [req.user.id]);
     let order_id = data.rows[0]["order_id"];
 
@@ -86,13 +87,7 @@ orderRouter.post("/confirmOrder", isAuthenticated, async (req, res) => {
     // Updating Order
     let query =
       "update Customer_Order set status = 'CONFIRMED', total = $1, delivery_charges = $2, taxes = $3, grand_total = $4 where order_id = $5";
-    let values = [
-      totalCost,
-      deliveryCharge,
-      tax,
-      Grand_Total,
-      order_id
-    ];
+    let values = [totalCost, deliveryCharge, tax, Grand_Total, order_id];
 
     data = await client.query(query, values);
     if (data.rowCount === 1) {

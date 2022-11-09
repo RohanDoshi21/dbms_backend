@@ -39,7 +39,7 @@
 ### 2. Connect to postgres database
 
 ```
-    docker exec -it postgres-container-id psql -U postgres
+    docker exec -it postgres psql -U postgres
 ```
 
 ### 3. Some Useful Commands
@@ -49,7 +49,7 @@
     \l
 
     # Use a databases
-    \c database_name
+    \c postgres
 
     # List all tables
     \dt
