@@ -1,6 +1,6 @@
 -- Trigger to change the quantity of each items after an update in the Customer_Order table
 CREATE
-OR REPLACE FUNCTION update_quantity() RETURNS TRIGGER AS $ BEGIN
+OR REPLACE FUNCTION update_quantity() RETURNS TRIGGER AS $$ BEGIN
 UPDATE
     Items
 SET
@@ -12,7 +12,7 @@ RETURN NEW;
 
 END;
 
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_quantity
 AFTER

@@ -28,11 +28,17 @@ orderRouter.post("/addItemToOrder", isAuthenticated, async (req, res) => {
     let total_price = selling_price * req.body.quantity;
     let packaging_charge = 0.05 * total_price;
 
+    let getOrderNo = "select order_id from Customer_Order where fk_customer = $1 and status = 'CREATED'";
+
+    data = await client.query(getOrderNo, [req.user.id]);
+
+    let order_id = data.rows[0]["order_id"];
+
     // Insert into Cart
     let cartQuery =
       "Insert into Cart(fk_order, fk_item, quantity, total, package_charges, status) values ($1, $2, $3, $4, $5, 'BOUGHT') RETURNING *";
     let cartValues = [
-      req.body.orderId,
+      order_id,
       req.body.itemId,
       req.body.quantity,
       total_price,
@@ -53,10 +59,14 @@ orderRouter.post("/addItemToOrder", isAuthenticated, async (req, res) => {
 
 orderRouter.post("/confirmOrder", isAuthenticated, async (req, res) => {
   try {
+    let getOrderNo = "select order_id from Customer_Order where fk_customer = $1 and status = 'CREATED'";
+    let data = await client.query(getOrderNo, [req.user.id]);
+    let order_id = data.rows[0]["order_id"];
+
     let totalCostQuery =
       'select sum(total + package_charges) as "Total Cost" from Cart where fk_order = $1';
 
-    let data = await client.query(totalCostQuery, [req.body.orderId]);
+    data = await client.query(totalCostQuery, [order_id]);
 
     // Calculating total cost and Grand Cost
     let totalCost = data.rows[0]["Total Cost"];
@@ -72,7 +82,7 @@ orderRouter.post("/confirmOrder", isAuthenticated, async (req, res) => {
       deliveryCharge,
       tax,
       Grand_Total,
-      req.body.orderId,
+      order_id
     ];
 
     data = await client.query(query, values);
