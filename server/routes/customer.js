@@ -134,17 +134,17 @@ customerRouter.get("/getItems", isAuthenticated, async (req, res) => {
 
   let search = req.query.name;
 
-  let search_q = "select * from items where items.name like $1";
-
-  console.log(search);
+  let search_q = "select * from items where LOWER(items.name) like $1";
 
   try {
     if (search) {
-      const dataq = await client.query(search_q, ["%" + req.query.name + "%"]);
-      res.json(dataq);
+        // convert search to lowercase
+        search = search.toLowerCase();
+      const data = await client.query(search_q, ["%" + search + "%"]);
+      res.json(data.rows);
     } else {
       const data = await client.query(text);
-      res.json(data);
+      res.json(data.rows);
     }
 
     // res.send("asd");
