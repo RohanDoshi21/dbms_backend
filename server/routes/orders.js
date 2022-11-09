@@ -4,13 +4,22 @@ const orderRouter = require("express").Router();
 const { isAuthenticated } = require("../middlewares/customerMiddleware.js");
 
 orderRouter.post("/createOrder", isAuthenticated, async (req, res) => {
+
+    let checkIfPreviousOrderExists = "select * from Customer_Order where fk_customer = $1 and status = 'CREATED'";
+
+
   let query =
     "Insert into Customer_Order(fk_customer, status) values ($1, 'CREATED') RETURNING order_id";
   let values = [req.user["id"]];
 
   try {
-    const data = await client.query(query, values);
-    res.json(data.rows[0]);
+    let result = await client.query(checkIfPreviousOrderExists, values);
+    if (result.rows.length > 0) {
+        res.status(400).json({ error: "Previous order exists" });
+    } else {
+        const data = await client.query(query, values);
+        res.json(data.rows[0]);
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
